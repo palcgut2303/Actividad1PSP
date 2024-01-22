@@ -16,9 +16,22 @@ import java.util.Scanner;
  */
 public class Cliente {
 
-    private static final int puertoServidor = 1234;
+    private static final int puertoServidor = 12346;
     private static final String direccionGrupo = "225.0.0.1";
     private static String user;
+
+    public String getUser() {
+        return user;
+    }
+
+    public  void setUser(String user) {
+        Cliente.user = user;
+    }
+
+    public Cliente() {
+    }
+    
+    
     public static void main(String[] args) {
         try {
             MulticastSocket multicastSocket = new MulticastSocket(puertoServidor);
@@ -32,12 +45,12 @@ public class Cliente {
             
             login(multicastSocket, user);
             
-            //new Thread(() -> receiveMessages(multicastSocket)).start();
+            new Thread(() -> receiveMessages(multicastSocket)).start();
             
             while (true) {
                 System.out.print("Introduce tu mensaje: ");
                 String message = sc.nextLine();
-                //sendMessage(multicastSocket, message);
+                sendMessage(multicastSocket, message);
             }
             
         } catch (Exception e) {
@@ -48,7 +61,25 @@ public class Cliente {
     //Método que sirve para enviar al servidor el usuario que se ha registrado.
     private static void login(DatagramSocket socket, String username) {
         String loginMessage = "USUARIO:" + username;
-        //sendRequest(socket, loginMessage);
+        sendRequest(socket, loginMessage);
+    }
+    
+    
+    //Este método toma un mensaje como parámetro y un datagramaSocket. Se introduce un string con el mensaje, que se va a enviar al servidor
+    //Se instancia el metodo sendRequest para enviar la peticion al sevidor
+    private static void sendMessage(DatagramSocket socket, String message) {
+    String sendMessage = user+" ha enviado un mensaje: " + message;
+    sendRequest(socket, sendMessage);
+    }
+
+    private static void sendRequest(DatagramSocket socket, String request) {
+        try {
+            byte[] sendData = request.getBytes();
+            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, java.net.InetAddress.getByName("localhost"), puertoServidor);
+            socket.send(sendPacket);
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
     
     
