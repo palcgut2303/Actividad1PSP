@@ -74,10 +74,12 @@
                   </Group>
               </Group>
               <EmptySpace type="separate" max="-2" attributes="0"/>
-              <Group type="103" groupAlignment="3" attributes="0">
-                  <Component id="jBenviar" alignment="3" min="-2" max="-2" attributes="0"/>
-                  <Component id="jBcargar" alignment="3" min="-2" max="-2" attributes="0"/>
+              <Group type="103" groupAlignment="0" attributes="0">
                   <Component id="jTFServidor" alignment="1" min="-2" pref="22" max="-2" attributes="0"/>
+                  <Group type="103" groupAlignment="3" attributes="0">
+                      <Component id="jBenviar" alignment="3" min="-2" max="-2" attributes="0"/>
+                      <Component id="jBcargar" alignment="3" min="-2" max="-2" attributes="0"/>
+                  </Group>
               </Group>
               <EmptySpace pref="111" max="32767" attributes="0"/>
           </Group>
