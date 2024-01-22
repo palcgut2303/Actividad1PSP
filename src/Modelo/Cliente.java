@@ -51,22 +51,6 @@ public class Cliente {
         //sendRequest(socket, loginMessage);
     }
     
-    //Este método toma un mensaje como parámetro y un datagramaSocket. Se introduce un string con el mensaje, que se va a enviar al servidor
-    //Se instancia el metodo sendRequest para enviar la peticion al sevidor
-    /*private static void sendMessage(DatagramSocket socket, String message) {
-    String sendMessage = user+" ha enviado un mensaje: " + message;
-    sendRequest(socket, sendMessage);
-    }   
-
-    private static void sendRequest(DatagramSocket socket, String request) {
-        try {
-            byte[] sendData = request.getBytes();
-            DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, java.net.InetAddress.getByName("localhost"), puertoServidor);
-            socket.send(sendPacket);
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-    }*/
     
     //Este método se ejecuta en un bucle infinito y se encarga de recibir mensajes del servidor constantemente.
     //Se implementa en un hilo aparte, para que tambien pueda el cliente a parte de recibir, enviar mensajes.
