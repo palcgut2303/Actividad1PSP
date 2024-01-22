@@ -4,15 +4,73 @@
  */
 package Modelo;
 
+import java.net.DatagramPacket;
+import java.net.DatagramSocket;
+import java.net.InetAddress;
+import java.net.MulticastSocket;
+import java.util.Scanner;
+
 /**
  *
  * @author ruben
  */
 public class Cliente {
+
+    private static final int puertoServidor = 1234;
+    private static final String direccionGrupo = "225.0.0.1";
+    private static String user;
+    public static void main(String[] args) {
+        try {
+            MulticastSocket multicastSocket = new MulticastSocket(puertoServidor);
+             InetAddress group = InetAddress.getByName(direccionGrupo);
+            multicastSocket.joinGroup(group);
+            Scanner sc = new Scanner(System.in);
+            
+            
+            System.out.println("Introduce tu usuario: ");
+            user = sc.nextLine();
+            
+            login(multicastSocket, user);
+            
+            //new Thread(() -> receiveMessages(multicastSocket)).start();
+            
+            while (true) {
+                System.out.print("Introduce tu mensaje: ");
+                String message = sc.nextLine();
+                //sendMessage(multicastSocket, message);
+            }
+            
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+    }
+    
+    //Método que sirve para enviar al servidor el usuario que se ha registrado.
+    private static void login(DatagramSocket socket, String username) {
+        String loginMessage = "USUARIO:" + username;
+        //sendRequest(socket, loginMessage);
+    }
     
     
-    private String user;
-    private String password;
-    
-    
+    //Este método se ejecuta en un bucle infinito y se encarga de recibir mensajes del servidor constantemente.
+    //Se implementa en un hilo aparte, para que tambien pueda el cliente a parte de recibir, enviar mensajes.
+    private static void receiveMessages(DatagramSocket socket) {
+    try {
+        while (true) {
+            byte[] receiveData = new byte[1024];
+            DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+            socket.receive(receivePacket);
+
+            String message = new String(receivePacket.getData(), 0, receivePacket.getLength());
+            System.out.println("Mensaje del servidor:"+message);
+             // Comprobación para cerrar la sesión si el mensaje contiene un "*"
+            if (message.trim().equals("*")) {
+                System.out.println("Sesión cerrada por el servidor.");
+                break; // Salir del bucle y cerrar la aplicación
+            }
+        }
+    } catch (Exception e) {
+        e.printStackTrace();
+    }
+}
 }

@@ -108,10 +108,11 @@ public class Servidor extends javax.swing.JDialog {
                         .addGap(28, 28, 28)
                         .addComponent(jLimagen)))
                 .addGap(18, 18, 18)
-                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
-                    .addComponent(jBenviar)
-                    .addComponent(jBcargar)
-                    .addComponent(jTFServidor, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE))
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jTFServidor, javax.swing.GroupLayout.Alignment.TRAILING, javax.swing.GroupLayout.PREFERRED_SIZE, 22, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
+                        .addComponent(jBenviar)
+                        .addComponent(jBcargar)))
                 .addContainerGap(111, Short.MAX_VALUE))
         );
 
