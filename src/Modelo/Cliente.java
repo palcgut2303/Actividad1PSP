@@ -32,12 +32,12 @@ public class Cliente {
             
             login(multicastSocket, user);
             
-            new Thread(() -> receiveMessages(multicastSocket)).start();
+            //new Thread(() -> receiveMessages(multicastSocket)).start();
             
             while (true) {
                 System.out.print("Introduce tu mensaje: ");
                 String message = sc.nextLine();
-                sendMessage(multicastSocket, message);
+                //sendMessage(multicastSocket, message);
             }
             
         } catch (Exception e) {
@@ -48,12 +48,12 @@ public class Cliente {
     //Método que sirve para enviar al servidor el usuario que se ha registrado.
     private static void login(DatagramSocket socket, String username) {
         String loginMessage = "USUARIO:" + username;
-        sendRequest(socket, loginMessage);
+        //sendRequest(socket, loginMessage);
     }
     
     //Este método toma un mensaje como parámetro y un datagramaSocket. Se introduce un string con el mensaje, que se va a enviar al servidor
     //Se instancia el metodo sendRequest para enviar la peticion al sevidor
-    private static void sendMessage(DatagramSocket socket, String message) {
+    /*private static void sendMessage(DatagramSocket socket, String message) {
     String sendMessage = user+" ha enviado un mensaje: " + message;
     sendRequest(socket, sendMessage);
     }   
@@ -66,7 +66,7 @@ public class Cliente {
         } catch (Exception e) {
             e.printStackTrace();
         }
-    }
+    }*/
     
     //Este método se ejecuta en un bucle infinito y se encarga de recibir mensajes del servidor constantemente.
     //Se implementa en un hilo aparte, para que tambien pueda el cliente a parte de recibir, enviar mensajes.
