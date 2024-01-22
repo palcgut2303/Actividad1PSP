@@ -12,5 +12,7 @@ public class Cliente {
     
     
     private String user;
+    private String password;
+    
     
 }
