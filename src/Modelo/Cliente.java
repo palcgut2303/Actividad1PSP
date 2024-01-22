@@ -59,7 +59,7 @@ public class Cliente {
     }
     
     //Método que sirve para enviar al servidor el usuario que se ha registrado.
-    private static void login(DatagramSocket socket, String username) {
+    private static void login(MulticastSocket socket, String username) {
         String loginMessage = "USUARIO:" + username;
         sendRequest(socket, loginMessage);
     }
@@ -67,12 +67,12 @@ public class Cliente {
     
     //Este método toma un mensaje como parámetro y un datagramaSocket. Se introduce un string con el mensaje, que se va a enviar al servidor
     //Se instancia el metodo sendRequest para enviar la peticion al sevidor
-    private static void sendMessage(DatagramSocket socket, String message) {
+    private static void sendMessage(MulticastSocket socket, String message) {
     String sendMessage = user+" ha enviado un mensaje: " + message;
     sendRequest(socket, sendMessage);
     }
 
-    private static void sendRequest(DatagramSocket socket, String request) {
+    private static void sendRequest(MulticastSocket socket, String request) {
         try {
             byte[] sendData = request.getBytes();
             DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, java.net.InetAddress.getByName("localhost"), puertoServidor);
@@ -93,7 +93,7 @@ public class Cliente {
             socket.receive(receivePacket);
 
             String message = new String(receivePacket.getData(), 0, receivePacket.getLength());
-            System.out.println("Mensaje del servidor:"+message);
+            System.out.println("\nMensaje del servidor:"+message);
              // Comprobación para cerrar la sesión si el mensaje contiene un "*"
             if (message.trim().equals("*")) {
                 System.out.println("Sesión cerrada por el servidor.");
