@@ -9,5 +9,5 @@ package Modelo;
  * @author ruben
  */
 public class Servidor {
-    
+    private String mensaje; 
 }
