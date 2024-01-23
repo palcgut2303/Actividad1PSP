@@ -44,13 +44,22 @@ public class Cliente {
             user = sc.nextLine();
             
             login(multicastSocket, user);
-            
-            new Thread(() -> receiveMessages(multicastSocket)).start();
-            
             while (true) {
-                System.out.print("Introduce tu mensaje: ");
-                String message = sc.nextLine();
-                sendMessage(multicastSocket, message);
+                // Enviar mensajes al grupo multicast
+                System.out.print("Enter message: ");
+                String sendMessage = sc.nextLine();
+               /* byte[] sendData = sendMessage.getBytes();
+                DatagramPacket sendPacket = new DatagramPacket(sendData, sendData.length, group, 12346);
+                multicastSocket.send(sendPacket);*/
+                sendMessage(multicastSocket, sendMessage);
+                
+               // Recibir mensajes del servidor
+                byte[] receiveData = new byte[1024];
+                DatagramPacket receivePacket = new DatagramPacket(receiveData, receiveData.length);
+                multicastSocket.receive(receivePacket);
+
+                String message = new String(receivePacket.getData(), 0, receivePacket.getLength());
+                System.out.println("Received message: " + message);
             }
             
         } catch (Exception e) {

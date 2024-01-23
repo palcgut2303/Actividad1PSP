@@ -36,17 +36,20 @@ public class Servidor {
          String mensajeUsuario = "";
          String usuario= "";
             
-            // El buffer se crea dentro del bucle para que se sobrescriba
-            // con cada nuevo mensaje
-            byte[] buf = new byte[1000];
-            DatagramPacket paquete = new DatagramPacket(buf, buf.length);
+        
         
         //Recibe el paquete de los clientes
         while (!msg.equals("*")) {
             
+                
+        // El buffer se crea dentro del bucle para que se sobrescriba
+        // con cada nuevo mensaje
+        byte[] buf = new byte[1000];
+        DatagramPacket paquete = new DatagramPacket(buf, buf.length);
+        ms.receive(paquete);
             
-            ms.receive(paquete);
-            msg = new String(paquete.getData());
+            
+            msg = new String(paquete.getData(), 0, paquete.getLength());
             
             
             if (msg.startsWith("USUARIO:")) {
@@ -63,8 +66,7 @@ public class Servidor {
            
         }
         
-        
-        
           ms.close();
     }
+    
 }
