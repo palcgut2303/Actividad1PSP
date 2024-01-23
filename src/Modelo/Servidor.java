@@ -11,62 +11,52 @@ import java.net.InetAddress;
 import java.net.MulticastSocket;
 import java.net.SocketException;
 import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Scanner;
 
 /**
  *
  * @author ruben
  */
-public class Servidor {
-    
-    public static void main(String[] args) throws SocketException, IOException {
-        
-        //Hacemos un array de clientes
-        ArrayList<String> listaDeNombres = new ArrayList<>();
-        
-        //Puerto por el que escucha el servidor a los clientes 
-        // DatagramSocket serverSocket = new DatagramSocket(12347);
-         
-          //Recibir los mensajes
-         MulticastSocket ms = new MulticastSocket(12346);
-         
-         //Asignamos la ip para que la gente se una. 
-         InetAddress grupo = InetAddress.getByName("225.0.0.1");
-         ms.joinGroup(grupo);
-         String msg = "";
-         String mensajeUsuario = "";
-         String usuario= "";
-            
-        
-        
-        //Recibe el paquete de los clientes
-        while (!msg.equals("*")) {
-            
-                
-        // El buffer se crea dentro del bucle para que se sobrescriba
-        // con cada nuevo mensaje
-        byte[] buf = new byte[1000];
-        DatagramPacket paquete = new DatagramPacket(buf, buf.length);
-        ms.receive(paquete);
-            
-            
-            msg = new String(paquete.getData(), 0, paquete.getLength());
-            
-            
-            if (msg.startsWith("USUARIO:")) {
-                usuario = msg.substring("USUARIO:".length());
-                listaDeNombres.add(usuario);
+public class Servidor{
+
+    public static void main(String args[]) throws Exception {
+        DatagramSocket serverSocket = new DatagramSocket(12346);
+        byte[] buffer = new byte[2048];
+
+        while (true) {
+            DatagramPacket receivePacket = new DatagramPacket(buffer, buffer.length);
+            serverSocket.receive(receivePacket);
+
+            InetAddress clientAddress = receivePacket.getAddress();
+            int clientPort = receivePacket.getPort();
+
+            String receivedMessage = new String(receivePacket.getData(), 0, receivePacket.getLength());
+
+            if (receivedMessage.equalsIgnoreCase("INICIAR SESION")) {
+
+                String registrationAck = "Registration successful";
+                buffer = registrationAck.getBytes();
+                DatagramPacket registrationAckPacket = new DatagramPacket(buffer, buffer.length, clientAddress, clientPort);
+                serverSocket.send(registrationAckPacket);
+            } else {
+
+                MulticastSocket ms = new MulticastSocket();
+                // Se escoge un puerto para el server
+                int puerto = 12346;
+                // Se escoge una dirección para el grupo
+                InetAddress grupoMulticast = InetAddress.getByName("225.0.0.1");
+                String cadena = receivedMessage;
+                System.out.print("Datos a enviar al grupo: ");
+                // Enviamos el mensaje a todos los clientes que se hayan unido al grupo
+                DatagramPacket paquete = new DatagramPacket(cadena.getBytes(), cadena.length(), grupoMulticast, puerto);
+                ms.send(paquete);
+                // Cerramos recursos
+                ms.close();
+                System.out.println("Socket cerrado...");
             }
-            else{
-                mensajeUsuario = msg;  
-                //Enviar el meensaje para todos los que están conectacdos al grupo
-                 DatagramPacket paquetEnviar = new DatagramPacket(mensajeUsuario.getBytes(), mensajeUsuario.length(), grupo, 12346);
-                 ms.send(paquetEnviar);
-                 System.out.println( mensajeUsuario.trim());
-            }
-           
+
         }
-        
-          ms.close();
     }
-    
 }
