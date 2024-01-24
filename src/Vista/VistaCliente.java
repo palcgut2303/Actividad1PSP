@@ -9,14 +9,10 @@ import Controlador.HiloControlador;
 import Modelo.Cliente;
 import java.io.File;
 import java.io.IOException;
-import java.net.DatagramPacket;
-import java.net.InetAddress;
-import java.net.MulticastSocket;
-import java.time.LocalDate;
+import java.util.Date;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.swing.JOptionPane;
-import javax.swing.JTextArea;
 import javax.swing.JFileChooser;
 import javax.swing.filechooser.FileNameExtensionFilter;
 
@@ -39,17 +35,27 @@ public class VistaCliente extends javax.swing.JFrame {
     public void setUsuario(String usuario) {
         this.usuario = usuario;
     }
-
+    Date fechaHoy = new Date();
+    
     public VistaCliente(String nombreUsuario) {
         initComponents();
         setLocationRelativeTo(null);
+        
+        
         usuario = nombreUsuario;
+        
         jLabel1.setText("CLIENTE " + usuario.toUpperCase());
+        
         jTACliente.setEditable(false);
+        
         HiloControlador contr = new HiloControlador(this);
-        contr.start();
+        contr.start(); //Iniciamos el hilo de recepcion de mensajes.
+        
+        appendTextArea("", "Sesion abierta a las: "+ fechaHoy.toString());
+        
+        //Mensaje para los clientes que esten conectado al server, para que visualize quien se ha unido.
         try {
-            cliente.enviarMensaje(getUsuario() + ": " + "Connected");
+            cliente.enviarMensaje(getUsuario() + ": " + "Connected"); 
         } catch (Exception e) {
         }
     }
@@ -170,7 +176,7 @@ public class VistaCliente extends javax.swing.JFrame {
     private void jBCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBCerrarActionPerformed
        String mensaje = "disconnected";
         try {
-            cliente.enviarMensaje(getUsuario() + ": " + mensaje);
+            cliente.enviarMensaje(getUsuario() + ": " + mensaje); //Mensaje que se envia al servidor para que reparta a los clientes, el usuario que ha abandona la sesión.
         } catch (IOException ex) {
             Logger.getLogger(VistaCliente.class.getName()).log(Level.SEVERE, null, ex);
         }
@@ -179,6 +185,7 @@ public class VistaCliente extends javax.swing.JFrame {
 
     private void jBEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBEnviarActionPerformed
         String mensaje = jTFMensajeUser.getText();
+        //Comprobamos que se ha introduce algo en el textField.
         if (!mensaje.equalsIgnoreCase("")) {
 
             appendTextAreaYo("Yo", mensaje);
@@ -196,8 +203,8 @@ public class VistaCliente extends javax.swing.JFrame {
     }//GEN-LAST:event_jBEnviarActionPerformed
 
     private void jBImagenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBImagenActionPerformed
-       JFileChooser file=new JFileChooser();
-       FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos PNG", "png");
+        JFileChooser file=new JFileChooser();
+        FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos PNG", "png");
         file.setFileFilter(filter);
         //file.showOpenDialog(this);
         // Mostrar el diálogo de selección de archivo
@@ -215,7 +222,7 @@ public class VistaCliente extends javax.swing.JFrame {
 
     private void jBDocumentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBDocumentoActionPerformed
         JFileChooser file=new JFileChooser();
-       FileNameExtensionFilter filter = new FileNameExtensionFilter("DOCUMENTOS", "txt");
+       FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos TXT", "txt");
         file.setFileFilter(filter);
         int result = file.showOpenDialog(null);
         
@@ -228,15 +235,17 @@ public class VistaCliente extends javax.swing.JFrame {
             JOptionPane.showMessageDialog(this, "El usuario canceló la operación");
         }
     }//GEN-LAST:event_jBDocumentoActionPerformed
-
+    
+    //Metodo que se utiliza para añadir texto en mi textArea, de los demas clientes
     public void appendTextArea(String nombreCliente, String mensaje) {
 
         String textoAnterior = jTACliente.getText();
-        String textoFinal = textoAnterior + "\n" + nombreCliente + "-" + mensaje;
+        String textoFinal = textoAnterior + "\n" + "-" + mensaje;
         jTACliente.setText(textoFinal);
 
     }
 
+    //Metodo que se utiliza para añadir mi mensaje en el TextArea
     public void appendTextAreaYo(String nombreCliente, String mensaje) {
 
         String textoAnterior = jTACliente.getText();

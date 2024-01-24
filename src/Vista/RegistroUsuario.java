@@ -90,7 +90,7 @@ public class RegistroUsuario extends javax.swing.JDialog {
                 dispose();
              }
             else{
-                JOptionPane.showMessageDialog(this,"Escribe un campo que no este vacio");
+                JOptionPane.showMessageDialog(this,"Escribe un campo que no este vacio.");
             }
         
         

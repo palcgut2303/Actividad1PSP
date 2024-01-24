@@ -18,6 +18,8 @@ import java.util.logging.Logger;
  *
  * @author Pablo Alcudia
  */
+
+//Clase controladora para recibir mensajes ya que estara en un hilo aparte, y estara recibiendo mensajes constantemente.
 public class HiloControlador extends Thread {
 
     VistaCliente vistaCliente;
@@ -37,19 +39,23 @@ public class HiloControlador extends Thread {
 
     public String receiveMessage() throws IOException {
 
+        //Inicia el socket del multicast, se conecta al grupo del servidor, donde debe de recibir los mensajes.
         MulticastSocket ms = iniciar();
-        //ms.joinGroup(mcastaddr, netIf);
+        
         String msg = "";
         while (true) {
             // El buffer se crea dentro del bucle para que se sobrescriba
             // con cada nuevo mensaje
             byte[] buf = new byte[1000];
             DatagramPacket paquete = new DatagramPacket(buf, buf.length);
+            
             //Recibe el paquete del servidor multicast
             ms.receive(paquete);
             msg = new String(paquete.getData());
-            System.out.println("Recibo: " + msg.trim());
+            System.out.println("Recibo del servidor: " + msg.trim());
 
+            //Metodo para sacar la posicion del caracter ":", para poder sacar el mensaje solo. 
+            //Ya que mi formato de mensaje es NombreUsuario: Mensaje.
             int indicePunto = sacarNombreUsuario(msg);
             String cadena = msg.substring(0, indicePunto);
             if (!cadena.contains(vistaCliente.getUsuario())) {

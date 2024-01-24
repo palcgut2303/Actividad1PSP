@@ -4,16 +4,10 @@
  */
 package Modelo;
 
-import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.DatagramSocket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
-import java.net.SocketException;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
 
 /**
  *
@@ -23,7 +17,7 @@ public class Servidor{
 
     public static void main(String args[]) throws Exception {
         DatagramSocket serverSocket = new DatagramSocket(12347);
-        int tamañoBuffer = 2048;
+        int tamañoBuffer = 4096;
         byte[] buffer = new byte[tamañoBuffer];
         
         while (true) {
@@ -50,13 +44,12 @@ public class Servidor{
                 // Se escoge una dirección para el grupo
                 InetAddress grupoMulticast = InetAddress.getByName("225.0.0.1");
                 String cadena = receivedMessage;
-                System.out.print("Datos a enviar al grupo: ");
+                System.out.print("Mensaje a enviar: ");
                 // Enviamos el mensaje a todos los clientes que se hayan unido al grupo
                 DatagramPacket paquete = new DatagramPacket(cadena.getBytes(), cadena.length(), grupoMulticast, puerto);
                 ms.send(paquete);
                 // Cerramos recursos
                 ms.close();
-                System.out.println("Socket cerrado...");
             }
 
         }
