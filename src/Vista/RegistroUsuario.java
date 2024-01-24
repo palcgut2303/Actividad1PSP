@@ -19,6 +19,7 @@ public class RegistroUsuario extends javax.swing.JDialog {
     public RegistroUsuario(java.awt.Frame parent, boolean modal) {
         super(parent, modal);
         initComponents();
+        setLocationRelativeTo(null);
     }
 
     /**
