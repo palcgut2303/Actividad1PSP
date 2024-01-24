@@ -66,7 +66,7 @@ public class Cliente {
         byte[] buffer = new byte[2028];
 
         InetAddress serverAddress = InetAddress.getLocalHost();
-        int serverPort = 12346;
+        int serverPort = 12347;
 
         
         String registrationMessage = "INICIAR SESION";

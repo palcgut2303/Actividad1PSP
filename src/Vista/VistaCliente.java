@@ -7,6 +7,7 @@ package Vista;
 
 import Controlador.HiloControlador;
 import Modelo.Cliente;
+import java.io.File;
 import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
@@ -14,7 +15,10 @@ import java.net.MulticastSocket;
 import java.time.LocalDate;
 import java.util.logging.Level;
 import java.util.logging.Logger;
+import javax.swing.JOptionPane;
 import javax.swing.JTextArea;
+import javax.swing.JFileChooser;
+import javax.swing.filechooser.FileNameExtensionFilter;
 
 /**
  *
@@ -25,11 +29,9 @@ public class VistaCliente extends javax.swing.JFrame {
     /**
      * Creates new form VistaCliente
      */
-    
-    
     String usuario = "";
     Cliente cliente = new Cliente();
-    
+
     public String getUsuario() {
         return usuario;
     }
@@ -37,14 +39,19 @@ public class VistaCliente extends javax.swing.JFrame {
     public void setUsuario(String usuario) {
         this.usuario = usuario;
     }
-    
+
     public VistaCliente(String nombreUsuario) {
         initComponents();
         setLocationRelativeTo(null);
         usuario = nombreUsuario;
-        jTACliente.setEditable(true);
+        jLabel1.setText("CLIENTE " + usuario.toUpperCase());
+        jTACliente.setEditable(false);
         HiloControlador contr = new HiloControlador(this);
         contr.start();
+        try {
+            cliente.enviarMensaje(getUsuario() + ": " + "Connected");
+        } catch (Exception e) {
+        }
     }
 
     /**
@@ -60,9 +67,10 @@ public class VistaCliente extends javax.swing.JFrame {
         jTACliente = new javax.swing.JTextArea();
         jLabel1 = new javax.swing.JLabel();
         jTFMensajeUser = new javax.swing.JTextField();
-        jButton1 = new javax.swing.JButton();
-        jButton2 = new javax.swing.JButton();
+        jBEnviar = new javax.swing.JButton();
+        jBImagen = new javax.swing.JButton();
         jBCerrar = new javax.swing.JButton();
+        jBDocumento = new javax.swing.JButton();
 
         setDefaultCloseOperation(javax.swing.WindowConstants.EXIT_ON_CLOSE);
 
@@ -74,24 +82,38 @@ public class VistaCliente extends javax.swing.JFrame {
         jLabel1.setForeground(new java.awt.Color(0, 0, 255));
         jLabel1.setText("CLIENTE");
 
-        jButton1.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton1.setForeground(new java.awt.Color(0, 0, 255));
-        jButton1.setText("Enviar Mensaje");
-        jButton1.addActionListener(new java.awt.event.ActionListener() {
+        jBEnviar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jBEnviar.setForeground(new java.awt.Color(0, 0, 255));
+        jBEnviar.setText("Enviar Mensaje");
+        jBEnviar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
-                jButton1ActionPerformed(evt);
+                jBEnviarActionPerformed(evt);
             }
         });
 
-        jButton2.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jButton2.setForeground(new java.awt.Color(0, 0, 255));
-        jButton2.setText("ARCHIVO");
+        jBImagen.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jBImagen.setForeground(new java.awt.Color(0, 0, 255));
+        jBImagen.setText("IMAGEN");
+        jBImagen.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBImagenActionPerformed(evt);
+            }
+        });
 
         jBCerrar.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
-        jBCerrar.setText("CERRAR");
+        jBCerrar.setText("CERRAR SESIÓN");
         jBCerrar.addActionListener(new java.awt.event.ActionListener() {
             public void actionPerformed(java.awt.event.ActionEvent evt) {
                 jBCerrarActionPerformed(evt);
+            }
+        });
+
+        jBDocumento.setFont(new java.awt.Font("Segoe UI", 1, 14)); // NOI18N
+        jBDocumento.setForeground(new java.awt.Color(0, 0, 255));
+        jBDocumento.setText("DOCUMENTO");
+        jBDocumento.addActionListener(new java.awt.event.ActionListener() {
+            public void actionPerformed(java.awt.event.ActionEvent evt) {
+                jBDocumentoActionPerformed(evt);
             }
         });
 
@@ -99,25 +121,27 @@ public class VistaCliente extends javax.swing.JFrame {
         getContentPane().setLayout(layout);
         layout.setHorizontalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
-            .addGroup(layout.createSequentialGroup()
+            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(185, 185, 185)
+                        .addComponent(jLabel1))
+                    .addGroup(layout.createSequentialGroup()
+                        .addGap(253, 253, 253)
+                        .addComponent(jBCerrar))
                     .addGroup(layout.createSequentialGroup()
                         .addGap(100, 100, 100)
                         .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING, false)
-                            .addGroup(layout.createSequentialGroup()
-                                .addComponent(jTFMensajeUser, javax.swing.GroupLayout.PREFERRED_SIZE, 191, javax.swing.GroupLayout.PREFERRED_SIZE)
-                                .addGap(26, 26, 26)
-                                .addComponent(jButton1)
-                                .addGap(18, 18, 18)
-                                .addComponent(jButton2, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
-                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 449, javax.swing.GroupLayout.PREFERRED_SIZE)))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(232, 232, 232)
-                        .addComponent(jLabel1))
-                    .addGroup(layout.createSequentialGroup()
-                        .addGap(274, 274, 274)
-                        .addComponent(jBCerrar)))
-                .addContainerGap(102, Short.MAX_VALUE))
+                            .addGroup(javax.swing.GroupLayout.Alignment.TRAILING, layout.createSequentialGroup()
+                                .addComponent(jTFMensajeUser)
+                                .addPreferredGap(javax.swing.LayoutStyle.ComponentPlacement.UNRELATED)
+                                .addComponent(jBEnviar, javax.swing.GroupLayout.PREFERRED_SIZE, 146, javax.swing.GroupLayout.PREFERRED_SIZE))
+                            .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 449, javax.swing.GroupLayout.PREFERRED_SIZE))))
+                .addGap(49, 49, 49)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.TRAILING)
+                    .addComponent(jBImagen, javax.swing.GroupLayout.PREFERRED_SIZE, 120, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addComponent(jBDocumento))
+                .addContainerGap(40, Short.MAX_VALUE))
         );
         layout.setVerticalGroup(
             layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
@@ -125,46 +149,102 @@ public class VistaCliente extends javax.swing.JFrame {
                 .addGap(31, 31, 31)
                 .addComponent(jLabel1, javax.swing.GroupLayout.PREFERRED_SIZE, 38, javax.swing.GroupLayout.PREFERRED_SIZE)
                 .addGap(18, 18, 18)
-                .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
+                .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.LEADING)
+                    .addComponent(jScrollPane1, javax.swing.GroupLayout.PREFERRED_SIZE, 343, javax.swing.GroupLayout.PREFERRED_SIZE)
+                    .addGroup(layout.createSequentialGroup()
+                        .addComponent(jBImagen)
+                        .addGap(47, 47, 47)
+                        .addComponent(jBDocumento)))
                 .addGap(46, 46, 46)
                 .addGroup(layout.createParallelGroup(javax.swing.GroupLayout.Alignment.BASELINE)
                     .addComponent(jTFMensajeUser, javax.swing.GroupLayout.PREFERRED_SIZE, javax.swing.GroupLayout.DEFAULT_SIZE, javax.swing.GroupLayout.PREFERRED_SIZE)
-                    .addComponent(jButton1)
-                    .addComponent(jButton2))
-                .addGap(18, 18, 18)
+                    .addComponent(jBEnviar))
+                .addGap(34, 34, 34)
                 .addComponent(jBCerrar)
-                .addContainerGap(15, Short.MAX_VALUE))
+                .addContainerGap(javax.swing.GroupLayout.DEFAULT_SIZE, Short.MAX_VALUE))
         );
 
         pack();
     }// </editor-fold>//GEN-END:initComponents
 
     private void jBCerrarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBCerrarActionPerformed
+       String mensaje = "disconnected";
+        try {
+            cliente.enviarMensaje(getUsuario() + ": " + mensaje);
+        } catch (IOException ex) {
+            Logger.getLogger(VistaCliente.class.getName()).log(Level.SEVERE, null, ex);
+        }
         dispose();
     }//GEN-LAST:event_jBCerrarActionPerformed
 
-    private void jButton1ActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jButton1ActionPerformed
+    private void jBEnviarActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBEnviarActionPerformed
         String mensaje = jTFMensajeUser.getText();
-        escribirText("Yo", mensaje);
-        
-         try {
-            cliente.enviarMensaje(getUsuario() + " : " + mensaje);
-            jTFMensajeUser.setText("");
-        } catch (IOException ex) {
-            
-        }
-        
-    }//GEN-LAST:event_jButton1ActionPerformed
+        if (!mensaje.equalsIgnoreCase("")) {
 
-    public void escribirText(String nombreCliente, String mensaje){
+            appendTextAreaYo("Yo", mensaje);
+
+            try {
+                cliente.enviarMensaje(getUsuario() + ": " + mensaje);
+                jTFMensajeUser.setText("");
+            } catch (IOException ex) {
+
+            }
+        }else{
+            JOptionPane.showMessageDialog(this, "Escribe un mensaje, antes de enviar algo.");
+        }
+
+    }//GEN-LAST:event_jBEnviarActionPerformed
+
+    private void jBImagenActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBImagenActionPerformed
+       JFileChooser file=new JFileChooser();
+       FileNameExtensionFilter filter = new FileNameExtensionFilter("Archivos PNG", "png");
+        file.setFileFilter(filter);
+        //file.showOpenDialog(this);
+        // Mostrar el diálogo de selección de archivo
+        int result = file.showOpenDialog(null);
         
-       String textoAnterior = jTACliente.getText();
-       String textoFinal = textoAnterior + "\n" + "[" + nombreCliente + "]  " + mensaje;
-       jTACliente.setText(textoFinal);
+        if(result == JFileChooser.APPROVE_OPTION){
+            File selectedFile = file.getSelectedFile();
+            String rutaArchivo = selectedFile.getAbsolutePath();
+            // Imprimir la ruta del archivo seleccionado
+            jTFMensajeUser.setText(rutaArchivo);
+        } else {
+            JOptionPane.showMessageDialog(this, "El usuario canceló la operación");
+        }
+    }//GEN-LAST:event_jBImagenActionPerformed
+
+    private void jBDocumentoActionPerformed(java.awt.event.ActionEvent evt) {//GEN-FIRST:event_jBDocumentoActionPerformed
+        JFileChooser file=new JFileChooser();
+       FileNameExtensionFilter filter = new FileNameExtensionFilter("DOCUMENTOS", "txt");
+        file.setFileFilter(filter);
+        int result = file.showOpenDialog(null);
         
+        if(result == JFileChooser.APPROVE_OPTION){
+            File selectedFile = file.getSelectedFile();
+            String rutaArchivo = selectedFile.getAbsolutePath();
+            // Imprimir la ruta del archivo seleccionado
+            jTFMensajeUser.setText(rutaArchivo);
+        } else {
+            JOptionPane.showMessageDialog(this, "El usuario canceló la operación");
+        }
+    }//GEN-LAST:event_jBDocumentoActionPerformed
+
+    public void appendTextArea(String nombreCliente, String mensaje) {
+
+        String textoAnterior = jTACliente.getText();
+        String textoFinal = textoAnterior + "\n" + nombreCliente + "-" + mensaje;
+        jTACliente.setText(textoFinal);
+
     }
-   
-    
+
+    public void appendTextAreaYo(String nombreCliente, String mensaje) {
+
+        String textoAnterior = jTACliente.getText();
+        String textoFinal = textoAnterior + "\n" + nombreCliente + ": " + mensaje;
+        jTACliente.setText(textoFinal);
+
+    }
+
     /**
      * @param args the command line arguments
      */
@@ -203,13 +283,12 @@ public class VistaCliente extends javax.swing.JFrame {
 
     // Variables declaration - do not modify//GEN-BEGIN:variables
     private javax.swing.JButton jBCerrar;
-    private javax.swing.JButton jButton1;
-    private javax.swing.JButton jButton2;
+    private javax.swing.JButton jBDocumento;
+    private javax.swing.JButton jBEnviar;
+    private javax.swing.JButton jBImagen;
     private javax.swing.JLabel jLabel1;
     private javax.swing.JScrollPane jScrollPane1;
     private javax.swing.JTextArea jTACliente;
     private javax.swing.JTextField jTFMensajeUser;
     // End of variables declaration//GEN-END:variables
 }
-
-

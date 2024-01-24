@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -19,28 +20,24 @@ import java.util.logging.Logger;
  */
 public class HiloControlador extends Thread {
 
-    VistaCliente i;
+    VistaCliente vistaCliente;
 
     public HiloControlador(VistaCliente i) {
-        this.i = i;
+        this.vistaCliente = i;
     }
 
     @Override
     public void run() {
         try {
-            recibirMensaje();
+            receiveMessage();
         } catch (IOException ex) {
             Logger.getLogger(HiloControlador.class.getName()).log(Level.SEVERE, null, ex);
         }
     }
 
-    public String recibirMensaje() throws IOException {
+    public String receiveMessage() throws IOException {
 
-        int puerto = 12346;//Puerto multicast
-        MulticastSocket ms = new MulticastSocket(puerto);
-        //Nos unimos al grupo multicast
-        InetAddress grupo = InetAddress.getByName("225.0.0.1");
-        ms.joinGroup(grupo);
+        MulticastSocket ms = iniciar();
         //ms.joinGroup(mcastaddr, netIf);
         String msg = "";
         while (true) {
@@ -53,16 +50,31 @@ public class HiloControlador extends Thread {
             msg = new String(paquete.getData());
             System.out.println("Recibo: " + msg.trim());
 
-            int indiceSegundoCorchete = 0;
-            for (int j = 0; j < msg.length(); j++) {
-                if ((msg.charAt(j) + "").equals("]")) {
-                    indiceSegundoCorchete = j;
-                }
-            }
-            String cadenaCorchetes = msg.substring(0, indiceSegundoCorchete);
-            if (!cadenaCorchetes.contains(i.getUsuario())) {
-                i.escribirText("", msg);
+            int indicePunto = sacarNombreUsuario(msg);
+            String cadena = msg.substring(0, indicePunto);
+            if (!cadena.contains(vistaCliente.getUsuario())) {
+                vistaCliente.appendTextArea("", msg);
             }
         }
+    }
+
+    private MulticastSocket iniciar() throws UnknownHostException, IOException {
+        int puerto = 12346;//Puerto multicast
+        MulticastSocket ms = new MulticastSocket(puerto);
+        //Nos unimos al grupo multicast
+        InetAddress grupo = InetAddress.getByName("225.0.0.1");
+        ms.joinGroup(grupo);
+        return ms;
+    }
+
+    private int sacarNombreUsuario(String msg) {
+        //Bucle para añadir en el textArea del cliente solo el usuario del que recibe, no su propio usuario.
+        int indicePunto = 0;
+        for (int i = 0; i < msg.length(); i++) {
+            if ((msg.charAt(i)+"").equals(":")) {
+                indicePunto = i;
+            }
+        }
+        return indicePunto;
     }
 }
