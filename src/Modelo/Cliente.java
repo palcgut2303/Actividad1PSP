@@ -20,24 +20,19 @@ public class Cliente {
     public void enviarMensaje(String message) throws SocketException, IOException {
 
         DatagramSocket socketCliente = new DatagramSocket();
-        byte[] buffer = new byte[4096];
+        byte[] buffer = new byte[1000];
 
-        InetAddress direccionServidor = InetAddress.getLocalHost();
-        int puertoServidor = 12347;
+        InetAddress direccionServidor = InetAddress.getByName("25.50.57.40");
+        int puertoServidor = 9876;
 
-        login(direccionServidor, puertoServidor, socketCliente);
-
-        buffer = message.getBytes();
-        DatagramPacket sendPacket = new DatagramPacket(buffer, buffer.length, direccionServidor, puertoServidor);
-        socketCliente.send(sendPacket);
-    }
-
-    private void login(InetAddress direccionServidor, int puertoServidor, DatagramSocket socketCliente) throws IOException {
-        byte[] buffer;
         String mensajeInicioSesion = "INICIAR SESION";
         buffer = mensajeInicioSesion.getBytes();
         DatagramPacket registrationPacket = new DatagramPacket(buffer, buffer.length, direccionServidor, puertoServidor);
         socketCliente.send(registrationPacket);
+
+        buffer = message.getBytes();
+        DatagramPacket sendPacket = new DatagramPacket(buffer, buffer.length, direccionServidor, puertoServidor);
+        socketCliente.send(sendPacket);
     }
 
 }

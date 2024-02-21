@@ -13,13 +13,13 @@ import java.net.MulticastSocket;
  *
  * @author ruben
  */
-public class Servidor{
+public class Servidor {
 
     public static void main(String args[]) throws Exception {
         DatagramSocket serverSocket = new DatagramSocket(12347);
-        int tamañoBuffer = 4096;
+        int tamañoBuffer = 1000;
         byte[] buffer = new byte[tamañoBuffer];
-        
+
         while (true) {
             DatagramPacket receivePacket = new DatagramPacket(buffer, buffer.length);
             serverSocket.receive(receivePacket);
@@ -35,7 +35,7 @@ public class Servidor{
                 buffer = registrationAck.getBytes();
                 DatagramPacket registrationAckPacket = new DatagramPacket(buffer, buffer.length, clientAddress, clientPort);
                 serverSocket.send(registrationAckPacket);
-                
+
             } else {
 
                 MulticastSocket ms = new MulticastSocket();
@@ -43,17 +43,16 @@ public class Servidor{
                 int puerto = 12346;
                 // Se escoge una dirección para el grupo
                 InetAddress grupoMulticast = InetAddress.getByName("225.0.0.1");
+
                 String cadena = receivedMessage;
-                System.out.print("Mensaje a enviar: ");
+                System.out.print("Mensaje a enviar: "+cadena);
                 // Enviamos el mensaje a todos los clientes que se hayan unido al grupo
                 DatagramPacket paquete = new DatagramPacket(cadena.getBytes(), cadena.length(), grupoMulticast, puerto);
                 ms.send(paquete);
-                // Cerramos recursos
-                ms.close();
+
             }
 
         }
     }
-    
-    
+
 }

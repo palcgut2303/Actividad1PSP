@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.net.DatagramPacket;
 import java.net.InetAddress;
 import java.net.MulticastSocket;
+import java.net.SocketAddress;
 import java.net.UnknownHostException;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -18,7 +19,6 @@ import java.util.logging.Logger;
  *
  * @author Pablo Alcudia
  */
-
 //Clase controladora para recibir mensajes ya que estara en un hilo aparte, y estara recibiendo mensajes constantemente.
 public class HiloControlador extends Thread {
 
@@ -40,15 +40,19 @@ public class HiloControlador extends Thread {
     public String receiveMessage() throws IOException {
 
         //Inicia el socket del multicast, se conecta al grupo del servidor, donde debe de recibir los mensajes.
-        MulticastSocket ms = iniciar();
-        
+        int puerto = 12345;//Puerto multicast
+        MulticastSocket ms = new MulticastSocket(puerto);
+        //Nos unimos al grupo multicast
+        InetAddress grupo = InetAddress.getByName("225.0.0.1");
+        ms.joinGroup(grupo);
+
         String msg = "";
-        while (true) {
+        while (msg != null) {
             // El buffer se crea dentro del bucle para que se sobrescriba
             // con cada nuevo mensaje
-            byte[] buf = new byte[1000];
+            byte[] buf = new byte[4096];
             DatagramPacket paquete = new DatagramPacket(buf, buf.length);
-            
+
             //Recibe el paquete del servidor multicast
             ms.receive(paquete);
             msg = new String(paquete.getData());
@@ -62,22 +66,17 @@ public class HiloControlador extends Thread {
                 vistaCliente.appendTextArea("", msg);
             }
         }
-    }
+        ms.leaveGroup(grupo);
+        ms.close();
 
-    private MulticastSocket iniciar() throws UnknownHostException, IOException {
-        int puerto = 12346;//Puerto multicast
-        MulticastSocket ms = new MulticastSocket(puerto);
-        //Nos unimos al grupo multicast
-        InetAddress grupo = InetAddress.getByName("225.0.0.1");
-        ms.joinGroup(grupo);
-        return ms;
+        return null;
     }
 
     private int sacarNombreUsuario(String msg) {
         //Bucle para añadir en el textArea del cliente solo el usuario del que recibe, no su propio usuario.
         int indicePunto = 0;
         for (int i = 0; i < msg.length(); i++) {
-            if ((msg.charAt(i)+"").equals(":")) {
+            if ((msg.charAt(i) + "").equals(":")) {
                 indicePunto = i;
             }
         }
